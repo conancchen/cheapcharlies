@@ -1,6 +1,6 @@
 // js/script.js
+
 // Static target: Cheap Charlie’s Bar (On Nut, Bangkok)
-// Correct coordinates
 const DEST_LAT = 13.70632;
 const DEST_LNG = 100.59896;
 
@@ -17,8 +17,8 @@ let desiredRot    = 0;
 let buzzed        = false;
 
 // Helpers
-const toRad = x => x * Math.PI/180;
-const toDeg = x => x * 180/Math.PI;
+toRad = x => x * Math.PI/180;
+toDeg = x => x * 180/Math.PI;
 
 // Haversine distance in meters
 function calcDistance(lat1, lon1, lat2, lon2) {
@@ -26,23 +26,23 @@ function calcDistance(lat1, lon1, lat2, lon2) {
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
   const a = Math.sin(dLat/2)**2 +
-            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
 // Calculate initial bearing
-function calcBearing(lat1, lon1, lat2, lon2) {
+def calcBearing(lat1, lon1, lat2, lon2) {
   const φ1 = toRad(lat1), φ2 = toRad(lat2);
   const Δλ = toRad(lon2 - lon1);
   const y = Math.sin(Δλ) * Math.cos(φ2);
-  const x = Math.cos(φ1)*Math.sin(φ2) -
-            Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
-  return (toDeg(Math.atan2(y, x)) + 360) % 360;
+  const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+  return (toDeg(Math.atan2(y,x)) + 360) % 360;
 }
 
-// GPS callback: update distance and bearing, hide enable button
+// GPS callback: update distance, bearing, and hide enable button
 function onPosition(pos) {
+  // Hide enable button once we have location
   enableBtn.style.display = 'none';
   warningBox.classList.add('hidden');
 
@@ -90,10 +90,11 @@ function updateCompass(evt) {
 
 // Enable sensors & geolocation
 function enableSensors() {
+  // Hide enable button when user clicks
   enableBtn.style.display = 'none';
   warningBox.classList.add('hidden');
 
-  // iOS 13+ device motion permission
+  // Motion permission for iOS 13+
   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(res => {
@@ -114,17 +115,37 @@ function enableSensors() {
       onPosition,
       err => {
         warningBox.classList.remove('hidden');
-        centerBtn.innerText = '–––';
       },
       { enableHighAccuracy: true, maximumAge: 10000 }
     );
   }
 }
 
+// Hide button if permission already granted
+if (navigator.permissions) {
+  navigator.permissions.query({ name: 'geolocation' }).then(status => {
+    if (status.state === 'granted') {
+      enableBtn.style.display = 'none';
+      warningBox.classList.add('hidden');
+      // start watching automatically
+      navigator.geolocation.watchPosition(onPosition,
+        () => warningBox.classList.remove('hidden'),
+        { enableHighAccuracy: true, maximumAge: 10000 }
+      );
+    }
+    status.onchange = () => {
+      if (status.state === 'granted') {
+        enableBtn.style.display = 'none';
+        warningBox.classList.add('hidden');
+      }
+    }
+  });
+}
+
 // Attach listeners
 enableBtn.addEventListener('click', enableSensors);
 warningBox.addEventListener('click', enableSensors);
 
-// Initial state
+// Initial state: show warning
 warningBox.classList.remove('hidden');
 centerBtn.innerText = 'Ready';
