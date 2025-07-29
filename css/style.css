@@ -1,7 +1,7 @@
+/* style.css */
 :root {
     --bg: #FFD42A;
-    --fg: #000;
-    --warning-bg: #FFD42A;
+    --fg: #000000;
     --btn-radius: 8px;
   }
   
@@ -29,21 +29,21 @@
   
   .subtitle {
     margin-top: 0.25rem;
-    color: #333;
     font-size: 1rem;
+    color: #333333;
   }
   
-  /* ==== Compass Circle ==== */
+  /* Compass circle rotates via JS smoothing */
   #compass-container {
     position: relative;
     width: 70vw;
     max-width: 350px;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
     border: 2px solid var(--fg);
     border-radius: 50%;
     margin: 2rem 0;
     transform-origin: center center;
-    transition: transform 0.2s ease-out;
+    /* transition removed: smoothing handled in JS */
     background: transparent;
   }
   
@@ -57,7 +57,7 @@
     color: var(--fg);
   }
   
-  /* ==== Center Button / Distance ==== */
+  /* Center distance button */
   #center-btn {
     padding: 0.75rem 1.5rem;
     background: var(--bg);
@@ -65,38 +65,37 @@
     border-radius: var(--btn-radius);
     font-weight: bold;
     margin-bottom: 1rem;
-    min-width: 120px;
+    min-width: 100px;
   }
   
-  /* ==== Warning Box ==== */
+  /* Warning box as button */
   #warning-box {
     padding: 0.75rem 1.5rem;
-    background: var(--warning-bg);
+    background: var(--bg);
     border: 2px solid var(--fg);
     border-radius: var(--btn-radius);
     color: var(--fg);
     margin-bottom: 1rem;
     font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  #warning-box:hover {
+    background-color: #FFE24A;
   }
   
-  /* Hide warning once active */
-  #warning-box.hidden {
-    display: none;
-  }
-  
-  /* ==== Enable Compass Button ==== */
+  /* Enable-compass button */
   #enable-btn {
     padding: 0.75rem 1.5rem;
-    background: var(--fg);
+    background-color: var(--fg);
     color: var(--bg);
     border: none;
     border-radius: var(--btn-radius);
     cursor: pointer;
     font-size: 1rem;
-    transition: background 0.2s;
+    transition: background-color 0.2s ease-in-out;
   }
-  
   #enable-btn:hover {
-    background: #222;
+    background-color: #222222;
   }
   
