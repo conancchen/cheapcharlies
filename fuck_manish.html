@@ -1,130 +1,148 @@
-// js/script.js
-// Static target: Cheap Charlie’s Bar (On Nut, Bangkok)
-// Correct coordinates
-const DEST_LAT = 13.70632;
-const DEST_LNG = 100.59896;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Prevent Safari mobile zoom on double-tap or pinch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Fuck Manish Counter</title>
+  <link rel="stylesheet" href="css/style.css" />
 
-// Element references
-const compassContainer = document.getElementById('compass-container');
-const centerBtn        = document.getElementById('center-btn');
-const warningBox       = document.getElementById('warning-box');
-const enableBtn        = document.getElementById('enable-btn');
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      background: #87efff; /* updated background color */
+      font-family: Arial, sans-serif;
+      color: #000;
+      text-align: center;
+      /* disable text selection zoom on long-press */
+      -webkit-user-select: none;
+      user-select: none;
+      /* disable double-tap zoom via touch-action */
+      touch-action: manipulation;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    #counter {
+      font-size: 4rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+    #manish-img {
+      max-width: 60vw;
+      max-height: 40vh;
+      width: auto;
+      height: auto;
+      border: 4px solid #000;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      /* ensure touch-action on image too */
+      touch-action: manipulation;
+    }
+    #fuck-btn {
+      padding: 1rem 2rem;
+      background: #000;
+      color: #87efff; /* updated text color to match new bg */
+      border: none;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      touch-action: manipulation;
+    }
+    #fuck-btn:active {
+      transform: scale(0.98);
+    }
+    .site-nav {
+      margin-bottom: 2rem;
+      touch-action: manipulation;
+    }
+    .site-nav a {
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 0.5rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+      touch-action: manipulation;
+    }
+    .site-nav a:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="fuck_manish.html">Fuck Manish</a>
+  </nav>
 
-// State
-let targetBearing = 0;
-let currentRot    = 0;
-let desiredRot    = 0;
-let buzzed        = false;
+  <h1>Fuck Manish Counter</h1>
+  <div id="counter">0</div>
+  <img id="manish-img" src="images/manish.jpg" alt="Manish">
+  <button id="fuck-btn">FUCK MANISH</button>
 
-// Helpers
-const toRad = x => x * Math.PI/180;
-const toDeg = x => x * 180/Math.PI;
+  <script>
+    const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
+    const counterEl = document.getElementById('counter');
+    const btn = document.getElementById('fuck-btn');
+    const img = document.getElementById('manish-img');
+    let currentCount = 0;
 
-// Haversine distance in meters
-function calcDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371000;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat/2)**2 +
-            Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
-
-// Calculate initial bearing
-function calcBearing(lat1, lon1, lat2, lon2) {
-  const φ1 = toRad(lat1), φ2 = toRad(lat2);
-  const Δλ = toRad(lon2 - lon1);
-  const y = Math.sin(Δλ) * Math.cos(φ2);
-  const x = Math.cos(φ1)*Math.sin(φ2) -
-            Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
-  return (toDeg(Math.atan2(y, x)) + 360) % 360;
-}
-
-// GPS callback: update distance and bearing, hide enable button
-function onPosition(pos) {
-  enableBtn.style.display = 'none';
-  warningBox.classList.add('hidden');
-
-  const { latitude: lat, longitude: lon } = pos.coords;
-  targetBearing = calcBearing(lat, lon, DEST_LAT, DEST_LNG);
-  const dist = calcDistance(lat, lon, DEST_LAT, DEST_LNG);
-
-  // Display 'Here' within 200m, meters under 2km, else km
-  if (dist <= 200) {
-    centerBtn.innerText = 'Here';
-  } else if (dist < 2000) {
-    centerBtn.innerText = `${Math.round(dist)} m`;
-  } else {
-    centerBtn.innerText = `${(dist/1000).toFixed(1)} km`;
-  }
-}
-
-// Smooth rotation loop
-function animate() {
-  currentRot += (desiredRot - currentRot) * 0.1;
-  compassContainer.style.transform = `rotate(${currentRot}deg)`;
-  requestAnimationFrame(animate);
-}
-requestAnimationFrame(animate);
-
-// Update desiredRot on device orientation
-function updateCompass(evt) {
-  let heading = evt.webkitCompassHeading ?? evt.alpha;
-  if (heading == null) return;
-
-  const screenAngle = (screen.orientation && screen.orientation.angle) || 0;
-  heading = (heading + screenAngle) % 360;
-
-  let rot = targetBearing - heading;
-  rot = ((rot + 540) % 360) - 180;
-  desiredRot = rot;
-
-  // Haptic within ±5°
-  if (Math.abs(rot) < 5 && !buzzed) {
-    navigator.vibrate?.(100);
-    buzzed = true;
-  }
-  if (Math.abs(rot) >= 5) buzzed = false;
-}
-
-// Enable sensors & geolocation
-function enableSensors() {
-  enableBtn.style.display = 'none';
-  warningBox.classList.add('hidden');
-
-  // iOS 13+ device motion permission
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission()
-      .then(res => {
-        if (res === 'granted') {
-          window.addEventListener('deviceorientation', updateCompass);
-          window.addEventListener('deviceorientationabsolute', updateCompass);
-        }
+    // Fetch initial count
+    fetch(API)
+      .then(res => res.json())
+      .then(data => {
+        currentCount = data.count || 0;
+        counterEl.textContent = currentCount;
       })
-      .catch(console.error);
-  } else {
-    window.addEventListener('deviceorientation', updateCompass);
-    window.addEventListener('deviceorientationabsolute', updateCompass);
-  }
+      .catch(() => counterEl.textContent = 0);
 
-  // Start watching location
-  if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
-      onPosition,
-      err => {
-        warningBox.classList.remove('hidden');
-        centerBtn.innerText = '–––';
-      },
-      { enableHighAccuracy: true, maximumAge: 10000 }
-    );
-  }
-}
+    // Common increment function
+    function incrementCounter() {
+      currentCount += 1;
+      counterEl.textContent = currentCount;
+      fetch(API, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.count >= currentCount) {
+            currentCount = data.count;
+            counterEl.textContent = currentCount;
+          }
+        });
+    }
 
-// Attach listeners
-enableBtn.addEventListener('click', enableSensors);
-warningBox.addEventListener('click', enableSensors);
+    // Button click
+    btn.addEventListener('click', incrementCounter);
+    // Image click
+    img.addEventListener('click', incrementCounter);
 
-// Initial state
-warningBox.classList.remove('hidden');
-centerBtn.innerText = 'Ready';
+    // Spacebar key press
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        incrementCounter();
+      }
+    });
+
+    // Poll every 5s for global updates
+    setInterval(() => {
+      fetch(API)
+        .then(res => res.json())
+        .then(data => {
+          if (data.count > currentCount) {
+            currentCount = data.count;
+            counterEl.textContent = currentCount;
+          }
+        });
+    }, 5000);
+  </script>
+</body>
+</html>
