@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Where is Cheap Charlie’s?</title>
+  <title>Where's Cheap Charlies</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header>
-    <h1>Compass to Cheap Charlie's</h1>
-    <p class="subtitle">Sukhumvit Soi 50, On Nut, Bangkok</p>
-    <p class="subtitle">Chloe sybau type shit</p>
+    <!-- Announcement banner -->
+    <div class="announcement">
+      📢 I WILL GIVE YOU A FREE DRINK IF YOU LEAVE A 1-STAR REVIEW FOR DIN TAI FUNG EIGHT THONGLOR AND ITS NOT CENSORED
+    </div>
 
+    <h1>Where's Cheap Charlies</h1>
+    <p class="subtitle">Sukhumvit Soi 50, On Nut, Bangkok</p>
   </header>
 
+  <!-- Rotating outer circle with fixed arrow -->
   <div id="compass-container"></div>
 
-  <!-- Center distance display -->
+  <!-- Center “button” shows distance or “Here” -->
   <div id="center-btn">Ready</div>
 
-  <!-- Warning box, now clickable to re-prompt -->
+  <!-- Warning box now a clickable prompt -->
   <div id="warning-box">Location required. Tap to enable.</div>
 
-  <button id="enable-btn">Compass required. Tap to enable.</button>
+  <!-- Fallback button to enable sensors -->
+  <button id="enable-btn">Enable Compass</button>
 
   <script src="js/script.js"></script>
 </body>
