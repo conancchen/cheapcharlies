@@ -123,3 +123,17 @@ header h1 {
 #enable-btn:hover {
   background-color: #222222;
 }
+
+/* Make that nav item look like a button */
+.site-nav a.button-link {
+  background-color: #000;        /* black fill */
+  color: #FFD42A;                /* yellow text */
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  border: 2px solid #000;
+  transition: background-color 0.2s ease;
+}
+.site-nav a.button-link:hover {
+  background-color: #222;        /* slightly lighter black on hover */
+}
+
