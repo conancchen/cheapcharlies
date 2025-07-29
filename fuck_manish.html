@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <!-- Prevent Safari mobile zoom on double-tap or pinch -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Manish Counter</title>
+  <title>F Manish Counter</title>
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
@@ -50,6 +50,20 @@
     #manish-img.shrink {
       transform: scale(0.9);
     }
+    #messages {
+      margin-top: 1rem;
+      width: 80vw;
+      max-width: 300px;
+      text-align: left;
+    }
+    #messages p {
+      background: rgba(255,255,255,0.8);
+      padding: 0.5rem;
+      border: 1px solid #000;
+      border-radius: 4px;
+      margin: 0.25rem 0;
+      font-size: 0.9rem;
+    }
     .site-nav {
       margin-bottom: 2rem;
       touch-action: manipulation;
@@ -62,6 +76,7 @@
       padding: 0.25rem 0.5rem;
       border-radius: 8px;
       transition: background-color 0.2s;
+      touch-action: manipulation;
     }
     .site-nav a:hover {
       background-color: rgba(0,0,0,0.1);
@@ -70,21 +85,40 @@
 </head>
 <body>
   <nav class="site-nav">
-    <a href="index.html">Cheap Charlies Compass</a>
+    <a href="index.html">Cheap Charlies Compass</a>
   </nav>
 
-  <h1>Manish Counter</h1>
-  <p id="instruction">Click the picture below to F Manish</p>
+  <h1>F Manish Counter</h1>
+  <p id="instruction">Click the picture to F Manish</p>
+
   <div id="counter">Loading…</div>
   <img id="manish-img" src="images/manish.jpg" alt="Manish">
+
+  <!-- Messages appear here after each 25 clicks -->
+  <div id="messages"></div>
 
   <script>
     const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
     const counterEl = document.getElementById('counter');
     const img       = document.getElementById('manish-img');
+    const messagesContainer = document.getElementById('messages');
     let currentCount = null;
 
-    // Show loading state
+    // Thresholds for messages (25 up to 200)
+    const thresholds = [25,50,75,100,125,150,175,200];
+
+    // Render messages based on count
+    function updateMessages() {
+      let html = '';
+      thresholds.forEach(t => {
+        if (currentCount >= t) {
+          html += '<p>[ Goodmorning, need any support from me? I hosted some of the biggest Bollywood parties in London. You know I did security for Mike Tyson right? Do you want some reccomendations for the massage parlors? ]</p>';
+        }
+      });
+      messagesContainer.innerHTML = html;
+    }
+
+    // Show loading
     counterEl.textContent = 'Loading…';
 
     // Fetch initial count
@@ -93,31 +127,37 @@
       .then(data => {
         currentCount = data.count || 0;
         counterEl.textContent = currentCount;
+        updateMessages();
       })
-      .catch(() => { currentCount = 0; counterEl.textContent = '0'; });
+      .catch(() => {
+        currentCount = 0;
+        counterEl.textContent = '0';
+        updateMessages();
+      });
 
-    // Increment logic with shrink and haptic
+    // Increment logic with shrink, haptic, messages update
     function incrementCounter() {
       if (currentCount === null) return;
-      // Shrink effect
+      // visual shrink
       img.classList.add('shrink');
       setTimeout(() => img.classList.remove('shrink'), 100);
-      // Haptic
+      // haptic
       navigator.vibrate?.(50);
-      // Update count
-      currentCount += 1;
+      // update count
+      currentCount++;
       counterEl.textContent = currentCount;
+      updateMessages();
       fetch(API, { method: 'POST' })
         .then(r => r.json())
         .then(data => {
           if (data.count >= currentCount) {
             currentCount = data.count;
             counterEl.textContent = currentCount;
+            updateMessages();
           }
         });
     }
 
-    // Click and keyboard handlers
     img.addEventListener('click', incrementCounter);
     document.addEventListener('keydown', e => {
       if (e.code === 'Space') {
@@ -126,7 +166,7 @@
       }
     });
 
-    // Poll every 5s for updates
+    // Poll every 5s and update messages
     setInterval(() => {
       if (currentCount === null) return;
       fetch(API)
@@ -135,6 +175,7 @@
           if (data.count > currentCount) {
             currentCount = data.count;
             counterEl.textContent = currentCount;
+            updateMessages();
           }
         });
     }, 5000);
