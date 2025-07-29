@@ -2,30 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  />
-  <title>Compass to Cheap Charlie’s Bar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How in the world do I get to Cheap Charlie’s?</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header>
-    <h1>Compass to Cheap Charlie’s </h1>
+    <h1>Compass to Cheap Charlie’s</h1>
     <p class="subtitle">Sukhumvit Soi 50, On Nut, Bangkok</p>
   </header>
 
-  <!-- Compass: outer circle rotates under the fixed arrow -->
   <div id="compass-container"></div>
 
-  <!-- Center “button” / distance display -->
+  <!-- Center distance display -->
   <div id="center-btn">Ready</div>
 
-  <!-- Warning if no location -->
-  <div id="warning-box">Location required. Refresh and enable.</div>
+  <!-- Warning box, now clickable to re-prompt -->
+  <div id="warning-box">Location required. Tap to enable.</div>
 
-  <!-- Enable compass (orientation) -->
-  <button id="enable-btn">Enable Compass</button>
+  <button id="enable-btn">Compass required. Tap to enable.</button>
 
   <script src="js/script.js"></script>
 </body>
