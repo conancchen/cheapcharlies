@@ -1,25 +1,24 @@
-// ——————————————————————————————
-//  Static target: Cheap Charlie's Bar (On Nut, Bangkok)
-// ——————————————————————————————
-const DEST_LAT = 13.7290;
-const DEST_LNG = 100.5780;
+// js/script.js
+// Static destination: Cheap Charlie’s Bar (On Nut, Bangkok)
+const DEST_LAT = 13.70633;
+const DEST_LNG = 100.59894;
 
 // Elements
 const compassContainer = document.getElementById("compass-container");
 const centerBtn = document.getElementById("center-btn");
 const warningBox = document.getElementById("warning-box");
 const enableBtn = document.getElementById("enable-btn");
-const statusEl = centerBtn; // reuse center for distance display
 
 let targetBearing = 0;
-let lastPosition = null;
+let currentRot = 0;
+let desiredRot = 0;
 let buzzed = false;
 
 // Helpers
-const toRad = (x) => (x * Math.PI) / 180;
-const toDeg = (x) => (x * 180) / Math.PI;
+const toRad = x => (x * Math.PI) / 180;
+const toDeg = x => (x * 180) / Math.PI;
 
-// Haversine distance in meters
+// Calculate distance in meters
 function calcDistance(lat1, lon1, lat2, lon2) {
   const R = 6371000; // meters
   const dLat = toRad(lat2 - lat1);
@@ -33,10 +32,10 @@ function calcDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Bearing in degrees
+// Calculate bearing in degrees
 function calcBearing(lat1, lon1, lat2, lon2) {
-  const φ1 = toRad(lat1),
-    φ2 = toRad(lat2);
+  const φ1 = toRad(lat1);
+  const φ2 = toRad(lat2);
   const Δλ = toRad(lon2 - lon1);
   const y = Math.sin(Δλ) * Math.cos(φ2);
   const x =
@@ -45,38 +44,40 @@ function calcBearing(lat1, lon1, lat2, lon2) {
   return (toDeg(Math.atan2(y, x)) + 360) % 360;
 }
 
-// ——————————————————————————————
-//  GPS callback → ACTIVE state
-// ——————————————————————————————
+// GPS callback → update distance & bearing
 function onPosition(pos) {
   warningBox.classList.add("hidden");
   const { latitude: lat, longitude: lon } = pos.coords;
   targetBearing = calcBearing(lat, lon, DEST_LAT, DEST_LNG);
-  const distM = calcDistance(lat, lon, DEST_LAT, DEST_LNG);
-  statusEl.innerText = `${Math.round(distM)} m`;
+  const dist = calcDistance(lat, lon, DEST_LAT, DEST_LNG);
+  let distText;
+  if (dist <= 200) {
+    distText = "Here";
+  } else if (dist > 2000) {
+    distText = `${(dist / 1000).toFixed(1)} km`;
+  } else {
+    distText = `${Math.round(dist)} m`;
+  }
+  centerBtn.innerText = distText;
 }
 
-// ——————————————————————————————
-//  Rotate compass circle & haptic
-// ——————————————————————————————
+// Smooth animation loop
+function animate() {
+  currentRot += (desiredRot - currentRot) * 0.1;
+  compassContainer.style.transform = `rotate(${currentRot}deg)`;
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+// Update compass on device orientation
 function updateCompass(evt) {
-  let heading =
-    evt.webkitCompassHeading !== undefined
-      ? evt.webkitCompassHeading
-      : evt.alpha;
+  let heading = evt.webkitCompassHeading ?? evt.alpha;
   if (heading == null) return;
-
-  // account for screen orientation
-  const screenAngle =
-    (screen.orientation && screen.orientation.angle) || 0;
+  const screenAngle = (screen.orientation?.angle) || 0;
   heading = (heading + screenAngle) % 360;
-
   let rot = targetBearing - heading;
-  rot = ((rot + 540) % 360) - 180; // shortest path
-
-  compassContainer.style.transform = `rotate(${rot}deg)`;
-
-  // Haptic when facing within ±5°
+  rot = ((rot + 540) % 360) - 180;
+  desiredRot = rot;
   if (Math.abs(rot) < 5 && !buzzed) {
     navigator.vibrate?.(100);
     buzzed = true;
@@ -84,47 +85,37 @@ function updateCompass(evt) {
   if (Math.abs(rot) >= 5) buzzed = false;
 }
 
-// ——————————————————————————————
-//  Enable orientation & geolocation
-// ——————————————————————————————
+// Enable sensors & geolocation
 function enableSensors() {
   enableBtn.style.display = "none";
-  // Orientation permission for iOS 13+
+  warningBox.classList.add("hidden");
   if (typeof DeviceOrientationEvent.requestPermission === "function") {
-    DeviceOrientationEvent.requestPermission().then((res) => {
-      if (res === "granted") {
-        window.addEventListener("deviceorientation", updateCompass);
-        window.addEventListener(
-          "deviceorientationabsolute",
-          updateCompass
-        );
-      }
-    });
+    DeviceOrientationEvent.requestPermission()
+      .then(res => {
+        if (res === "granted") {
+          window.addEventListener("deviceorientation", updateCompass);
+          window.addEventListener("deviceorientationabsolute", updateCompass);
+        }
+      })
+      .catch(console.error);
   } else {
     window.addEventListener("deviceorientation", updateCompass);
-    window.addEventListener(
-      "deviceorientationabsolute",
-      updateCompass
-    );
+    window.addEventListener("deviceorientationabsolute", updateCompass);
   }
-
-  // Start watching location
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       onPosition,
-      (err) => {
+      err => {
         warningBox.classList.remove("hidden");
-        statusEl.innerText = "–––";
+        centerBtn.innerText = "–––";
       },
       { enableHighAccuracy: true, maximumAge: 10000 }
     );
   }
 }
+enableBtn.addEventListener("click", enableSensors);
+warningBox.addEventListener("click", enableSensors);
 
-// Initial state: show warning + Ready
+// Initial state
 warningBox.classList.remove("hidden");
 centerBtn.innerText = "Ready";
-
-document
-  .getElementById("enable-btn")
-  .addEventListener("click", enableSensors);
