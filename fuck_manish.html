@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Click Below to Fuck Manish</title>
+  <!-- Prevent Safari mobile zoom on double-tap or pinch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Fuck Manish Counter</title>
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
@@ -16,6 +17,11 @@
       font-family: Arial, sans-serif;
       color: #000;
       text-align: center;
+      /* disable text selection zoom on long-press */
+      -webkit-user-select: none;
+      user-select: none;
+      /* disable double-tap zoom via touch-action */
+      touch-action: manipulation;
     }
     h1 {
       margin-bottom: 1rem;
@@ -35,6 +41,9 @@
       border: 4px solid #000;
       border-radius: 8px;
       margin-bottom: 1rem;
+      cursor: pointer;
+      /* ensure touch-action on image too */
+      touch-action: manipulation;
     }
     #fuck-btn {
       padding: 1rem 2rem;
@@ -45,12 +54,14 @@
       font-size: 1.25rem;
       cursor: pointer;
       margin-bottom: 2rem;
+      touch-action: manipulation;
     }
     #fuck-btn:active {
       transform: scale(0.98);
     }
     .site-nav {
       margin-bottom: 2rem;
+      touch-action: manipulation;
     }
     .site-nav a {
       color: #000;
@@ -60,6 +71,7 @@
       padding: 0.25rem 0.5rem;
       border-radius: 8px;
       transition: background-color 0.2s;
+      touch-action: manipulation;
     }
     .site-nav a:hover {
       background-color: rgba(0,0,0,0.1);
@@ -81,6 +93,7 @@
     const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
     const counterEl = document.getElementById('counter');
     const btn = document.getElementById('fuck-btn');
+    const img = document.getElementById('manish-img');
     let currentCount = 0;
 
     // Fetch initial count
@@ -92,19 +105,31 @@
       })
       .catch(() => counterEl.textContent = 0);
 
-    // Increment on button click (optimistic update)
-    btn.addEventListener('click', () => {
+    // Common increment function
+    function incrementCounter() {
       currentCount += 1;
       counterEl.textContent = currentCount;
       fetch(API, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
-          // Only update if server count >= local
           if (data.count >= currentCount) {
             currentCount = data.count;
             counterEl.textContent = currentCount;
           }
         });
+    }
+
+    // Button click
+    btn.addEventListener('click', incrementCounter);
+    // Image click
+    img.addEventListener('click', incrementCounter);
+
+    // Spacebar key press
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        incrementCounter();
+      }
     });
 
     // Poll every 5s for global updates
