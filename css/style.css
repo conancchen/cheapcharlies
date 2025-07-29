@@ -1,4 +1,3 @@
-/* style.css */
 :root {
     --bg: #FFD42A;
     --fg: #000000;
@@ -22,6 +21,18 @@
     text-align: center;
   }
   
+  /* Announcement banner */
+  .announcement {
+    background-color: var(--fg);
+    color: var(--bg);
+    padding: 0.5rem 1rem;
+    border-radius: var(--btn-radius);
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  /* Header text */
   header h1 {
     font-size: 2rem;
     font-weight: bold;
@@ -33,17 +44,16 @@
     color: #333333;
   }
   
-  /* Compass circle rotates via JS smoothing */
+  /* Compass circle (rotates via JS) */
   #compass-container {
     position: relative;
     width: 70vw;
     max-width: 350px;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1/1;
     border: 2px solid var(--fg);
     border-radius: 50%;
     margin: 2rem 0;
     transform-origin: center center;
-    /* transition removed: smoothing handled in JS */
     background: transparent;
   }
   
@@ -57,7 +67,7 @@
     color: var(--fg);
   }
   
-  /* Center distance button */
+  /* Center distance display */
   #center-btn {
     padding: 0.75rem 1.5rem;
     background: var(--bg);
@@ -68,7 +78,7 @@
     min-width: 100px;
   }
   
-  /* Warning box as button */
+  /* Warning box as a button */
   #warning-box {
     padding: 0.75rem 1.5rem;
     background: var(--bg);
@@ -81,7 +91,7 @@
     transition: background-color 0.2s ease-in-out;
   }
   #warning-box:hover {
-    background-color: #FFE24A;
+    background-color: #FFE24A; /* slight lightening */
   }
   
   /* Enable-compass button */
