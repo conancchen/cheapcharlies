@@ -1,0 +1,102 @@
+:root {
+    --bg: #FFD42A;
+    --fg: #000;
+    --warning-bg: #FFD42A;
+    --btn-radius: 8px;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    background: var(--bg);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: var(--fg);
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .subtitle {
+    margin-top: 0.25rem;
+    color: #333;
+    font-size: 1rem;
+  }
+  
+  /* ==== Compass Circle ==== */
+  #compass-container {
+    position: relative;
+    width: 70vw;
+    max-width: 350px;
+    aspect-ratio: 1/1;
+    border: 2px solid var(--fg);
+    border-radius: 50%;
+    margin: 2rem 0;
+    transform-origin: center center;
+    transition: transform 0.2s ease-out;
+    background: transparent;
+  }
+  
+  #compass-container::before {
+    content: "▲";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    color: var(--fg);
+  }
+  
+  /* ==== Center Button / Distance ==== */
+  #center-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--bg);
+    border: 2px solid var(--fg);
+    border-radius: var(--btn-radius);
+    font-weight: bold;
+    margin-bottom: 1rem;
+    min-width: 120px;
+  }
+  
+  /* ==== Warning Box ==== */
+  #warning-box {
+    padding: 0.75rem 1.5rem;
+    background: var(--warning-bg);
+    border: 2px solid var(--fg);
+    border-radius: var(--btn-radius);
+    color: var(--fg);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  /* Hide warning once active */
+  #warning-box.hidden {
+    display: none;
+  }
+  
+  /* ==== Enable Compass Button ==== */
+  #enable-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--fg);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--btn-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+  }
+  
+  #enable-btn:hover {
+    background: #222;
+  }
+  
