@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fuck Manish Counter</title>
+  <title>Click Below to Fuck Manish</title>
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
@@ -28,7 +28,10 @@
       margin: 1rem 0;
     }
     #manish-img {
-      max-width: 80vw;
+      max-width: 60vw;
+      max-height: 40vh;
+      width: auto;
+      height: auto;
       border: 4px solid #000;
       border-radius: 8px;
       margin-bottom: 1rem;
@@ -78,29 +81,41 @@
     const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
     const counterEl = document.getElementById('counter');
     const btn = document.getElementById('fuck-btn');
+    let currentCount = 0;
 
     // Fetch initial count
     fetch(API)
       .then(res => res.json())
       .then(data => {
-        counterEl.textContent = data.count || 0;
-      });
+        currentCount = data.count || 0;
+        counterEl.textContent = currentCount;
+      })
+      .catch(() => counterEl.textContent = 0);
 
-    // Increment on button click
+    // Increment on button click (optimistic update)
     btn.addEventListener('click', () => {
+      currentCount += 1;
+      counterEl.textContent = currentCount;
       fetch(API, { method: 'POST' })
         .then(res => res.json())
         .then(data => {
-          counterEl.textContent = data.count;
+          // Only update if server count >= local
+          if (data.count >= currentCount) {
+            currentCount = data.count;
+            counterEl.textContent = currentCount;
+          }
         });
     });
 
-    // Poll every 5s for updates
+    // Poll every 5s for global updates
     setInterval(() => {
       fetch(API)
         .then(res => res.json())
         .then(data => {
-          counterEl.textContent = data.count;
+          if (data.count > currentCount) {
+            currentCount = data.count;
+            counterEl.textContent = currentCount;
+          }
         });
     }, 5000);
   </script>
