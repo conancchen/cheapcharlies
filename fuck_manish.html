@@ -22,9 +22,14 @@
       touch-action: manipulation;
     }
     h1 {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       font-size: 2rem;
       font-weight: bold;
+    }
+    #instruction {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: #333;
     }
     #counter {
       font-size: 4rem;
@@ -38,20 +43,13 @@
       border-radius: 8px;
       margin-bottom: 1rem;
       cursor: pointer;
+      transition: transform 0.1s ease;
       touch-action: manipulation;
     }
-    #fuck-btn {
-      padding: 1rem 2rem;
-      background: #000;
-      color: #87efff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.25rem;
-      cursor: pointer;
-      margin-bottom: 2rem;
-      touch-action: manipulation;
+    /* Shrink effect on click */
+    #manish-img.shrink {
+      transform: scale(0.9);
     }
-    #fuck-btn:active { transform: scale(0.98); }
     .site-nav {
       margin-bottom: 2rem;
       touch-action: manipulation;
@@ -64,9 +62,10 @@
       padding: 0.25rem 0.5rem;
       border-radius: 8px;
       transition: background-color 0.2s;
-      touch-action: manipulation;
     }
-    .site-nav a:hover { background-color: rgba(0,0,0,0.1); }
+    .site-nav a:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
@@ -75,19 +74,17 @@
   </nav>
 
   <h1>F Manish Counter</h1>
-  <!-- Start with empty counter to avoid flashing 0 -->
-  <div id="counter"></div>
+  <p id="instruction">Click the picture to F Manish</p>
+  <div id="counter">Loading…</div>
   <img id="manish-img" src="images/manish.jpg" alt="Manish">
-  <button id="fuck-btn">F MANISH</button>
 
   <script>
     const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
     const counterEl = document.getElementById('counter');
-    const btn       = document.getElementById('fuck-btn');
     const img       = document.getElementById('manish-img');
     let currentCount = null;
 
-    // Indicate loading before count arrives
+    // Show loading state
     counterEl.textContent = 'Loading…';
 
     // Fetch initial count
@@ -97,12 +94,18 @@
         currentCount = data.count || 0;
         counterEl.textContent = currentCount;
       })
-      .catch(() => counterEl.textContent = '0');
+      .catch(() => { currentCount = 0; counterEl.textContent = '0'; });
 
-    // Shared increment logic
+    // Increment logic with shrink and haptic
     function incrementCounter() {
       if (currentCount === null) return;
-      currentCount++;
+      // Shrink effect
+      img.classList.add('shrink');
+      setTimeout(() => img.classList.remove('shrink'), 100);
+      // Haptic
+      navigator.vibrate?.(50);
+      // Update count
+      currentCount += 1;
       counterEl.textContent = currentCount;
       fetch(API, { method: 'POST' })
         .then(r => r.json())
@@ -114,10 +117,16 @@
         });
     }
 
-    btn.addEventListener('click', incrementCounter);
+    // Click and keyboard handlers
     img.addEventListener('click', incrementCounter);
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        incrementCounter();
+      }
+    });
 
-    // Poll every 5s for global updates
+    // Poll every 5s for updates
     setInterval(() => {
       if (currentCount === null) return;
       fetch(API)
