@@ -127,7 +127,7 @@ header h1 {
 /* Make that nav item look like a button */
 .site-nav a.button-link {
   background-color: #000;        /* black fill */
-  color: #FFD42A;                /* yellow text */
+  color: #87efff;                /* yellow text */
   padding: 0.25rem 0.75rem;
   border-radius: 8px;
   border: 2px solid #000;
