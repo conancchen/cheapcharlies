@@ -78,9 +78,7 @@
       transition: background-color 0.2s;
       touch-action: manipulation;
     }
-    .site-nav a:hover {
-      background-color: rgba(0,0,0,0.1);
-    }
+    .site-nav a:hover { background-color: rgba(0,0,0,0.1); }
   </style>
 </head>
 <body>
@@ -91,10 +89,10 @@
   <h1>F Manish Counter</h1>
   <p id="instruction">Click the picture to F Manish</p>
 
-  <div id="counter">Loading…</div>
+  <div id="counter"></div>
   <img id="manish-img" src="images/manish.jpg" alt="Manish">
 
-  <!-- Messages appear here after each 25 clicks -->
+  <!-- Messages: appear once thresholds reached -->
   <div id="messages"></div>
 
   <script>
@@ -104,21 +102,34 @@
     const messagesContainer = document.getElementById('messages');
     let currentCount = null;
 
-    // Thresholds for messages (25 up to 200)
-    const thresholds = [25,50,75,100,125,150,175,200];
+    // Define thresholds and custom messages (10 total)
+    const thresholds = Array.from({length: 10}, (_, i) => (i + 1) * 25);
+    const messageList = [
+      'Goodmorning',
+      'Need any support from me?',
+      'Do you want some massage parlor recs?',
+      'Is that ladyboy fucking you in the ass?',
+      'It is all about exposure, going to events man. Learning about different industries.',
+      'Mike Tyson is coming to Bangkok and I am doing his security',
+      'Oh you have the shits? BPHRLLLLL BPRHLLL (on the BTS btw)',
+      'Tell me tell me. I am your friend',
+      'I used to host the biggest Bollywood parties in London',
+      '250 clicks! If you made it here you must really wanna F manish.'
+    ];
 
     // Render messages based on count
     function updateMessages() {
-      let html = '';
-      thresholds.forEach(t => {
+      messagesContainer.innerHTML = '';
+      thresholds.forEach((t, i) => {
         if (currentCount >= t) {
-          html += '<p>[ Goodmorning, need any support from me? I hosted some of the biggest Bollywood parties in London. You know I did security for Mike Tyson right? Do you want some reccomendations for the massage parlors? ]</p>';
+          const p = document.createElement('p');
+          p.textContent = messageList[i];
+          messagesContainer.appendChild(p);
         }
       });
-      messagesContainer.innerHTML = html;
     }
 
-    // Show loading
+    // Show loading until fetched
     counterEl.textContent = 'Loading…';
 
     // Fetch initial count
@@ -138,12 +149,9 @@
     // Increment logic with shrink, haptic, messages update
     function incrementCounter() {
       if (currentCount === null) return;
-      // visual shrink
       img.classList.add('shrink');
       setTimeout(() => img.classList.remove('shrink'), 100);
-      // haptic
       navigator.vibrate?.(50);
-      // update count
       currentCount++;
       counterEl.textContent = currentCount;
       updateMessages();
