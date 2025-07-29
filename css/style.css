@@ -1,111 +1,125 @@
 :root {
-    --bg: #FFD42A;
-    --fg: #000000;
-    --btn-radius: 8px;
-  }
-  
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem;
-    background: var(--bg);
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    color: var(--fg);
-    text-align: center;
-  }
-  
-  /* Announcement banner */
-  .announcement {
-    background-color: var(--fg);
-    color: var(--bg);
-    padding: 0.5rem 1rem;
-    border-radius: var(--btn-radius);
-    font-size: 0.9rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
-  /* Header text */
-  header h1 {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  .subtitle {
-    margin-top: 0.25rem;
-    font-size: 1rem;
-    color: #333333;
-  }
-  
-  /* Compass circle (rotates via JS) */
-  #compass-container {
-    position: relative;
-    width: 70vw;
-    max-width: 350px;
-    aspect-ratio: 1/1;
-    border: 2px solid var(--fg);
-    border-radius: 50%;
-    margin: 2rem 0;
-    transform-origin: center center;
-    background: transparent;
-  }
-  
-  #compass-container::before {
-    content: "▲";
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.5rem;
-    color: var(--fg);
-  }
-  
-  /* Center distance display */
-  #center-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--bg);
-    border: 2px solid var(--fg);
-    border-radius: var(--btn-radius);
-    font-weight: bold;
-    margin-bottom: 1rem;
-    min-width: 100px;
-  }
-  
-  /* Warning box as a button */
-  #warning-box {
-    padding: 0.75rem 1.5rem;
-    background: var(--bg);
-    border: 2px solid var(--fg);
-    border-radius: var(--btn-radius);
-    color: var(--fg);
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  #warning-box:hover {
-    background-color: #FFE24A; /* slight lightening */
-  }
-  
-  /* Enable-compass button */
-  #enable-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: var(--fg);
-    color: var(--bg);
-    border: none;
-    border-radius: var(--btn-radius);
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.2s ease-in-out;
-  }
-  #enable-btn:hover {
-    background-color: #222222;
-  }
-  
+  --bg: #FFD42A;
+  --fg: #000000;
+  --btn-radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  background: var(--bg);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: var(--fg);
+  text-align: center;
+}
+
+/* Announcement banner */
+.announcement {
+  background-color: var(--fg);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  border-radius: var(--btn-radius);
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Site navigation */
+.site-nav {
+  margin-bottom: 1rem;
+}
+.site-nav a {
+  color: var(--fg);
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--btn-radius);
+  transition: background-color 0.2s ease-in-out;
+}
+.site-nav a:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  color: #333333;
+}
+
+/* Compass circle */
+#compass-container {
+  position: relative;
+  width: 70vw;
+  max-width: 350px;
+  aspect-ratio: 1/1;
+  border: 2px solid var(--fg);
+  border-radius: 50%;
+  margin: 2rem 0;
+  transform-origin: center center;
+  background: transparent;
+}
+#compass-container::before {
+  content: "▲";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  color: var(--fg);
+}
+
+/* Center distance display */
+#center-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg);
+  border: 2px solid var(--fg);
+  border-radius: var(--btn-radius);
+  font-weight: bold;
+  margin-bottom: 1rem;
+  min-width: 100px;
+}
+
+/* Warning box as button */
+#warning-box {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg);
+  border: 2px solid var(--fg);
+  border-radius: var(--btn-radius);
+  color: var(--fg);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+#warning-box:hover {
+  background-color: #FFE24A;
+}
+
+/* Enable-compass button */
+#enable-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--fg);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+}
+#enable-btn:hover {
+  background-color: #222222;
+}
