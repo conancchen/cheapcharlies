@@ -1,6 +1,6 @@
 // Static destination: Cheap Charlie’s Bar (On Nut, Bangkok)
-const DEST_LAT = 13.7290;
-const DEST_LNG = 100.5780;
+const DEST_LAT = 13.70632;
+const DEST_LNG = 100.59896;
 
 // Elements
 const compassContainer = document.getElementById("compass-container");
