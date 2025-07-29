@@ -92,18 +92,22 @@
   <div id="counter"></div>
   <img id="manish-img" src="images/manish.jpg" alt="Manish">
 
-  <!-- Messages: appear once thresholds reached -->
+  <!-- Messages: appear only after session clicks reach thresholds -->
   <div id="messages"></div>
 
   <script>
     const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
     const counterEl = document.getElementById('counter');
-    const img       = document.getElementById('manish-img');
+    const img = document.getElementById('manish-img');
     const messagesContainer = document.getElementById('messages');
-    let currentCount = null;
 
-    // Define thresholds and custom messages (10 total)
-    const thresholds = Array.from({length: 10}, (_, i) => (i + 1) * 25);
+    // Session click count
+    let sessionClicks = 0;
+    // Persistent global count
+    let globalCount = null;
+
+    // Define thresholds and messages
+    const thresholds = [25,50,75,100,125,150,175,200,225,250];
     const messageList = [
       'Goodmorning',
       'Need any support from me?',
@@ -117,11 +121,11 @@
       '250 clicks! If you made it here you must really wanna F manish.'
     ];
 
-    // Render messages based on count
+    // Render messages based on sessionClicks
     function updateMessages() {
       messagesContainer.innerHTML = '';
-      thresholds.forEach((t, i) => {
-        if (currentCount >= t) {
+      thresholds.forEach((t,i) => {
+        if (sessionClicks >= t) {
           const p = document.createElement('p');
           p.textContent = messageList[i];
           messagesContainer.appendChild(p);
@@ -129,64 +133,46 @@
       });
     }
 
-    // Show loading until fetched
+    // Show loading initial
     counterEl.textContent = 'Loading…';
 
-    // Fetch initial count
+    // Fetch global count only for display
     fetch(API)
-      .then(r => r.json())
-      .then(data => {
-        currentCount = data.count || 0;
-        counterEl.textContent = currentCount;
-        updateMessages();
+      .then(r=>r.json())
+      .then(data=>{
+        globalCount = data.count || 0;
+        counterEl.textContent = globalCount;
       })
-      .catch(() => {
-        currentCount = 0;
-        counterEl.textContent = '0';
-        updateMessages();
-      });
+      .catch(()=> { globalCount=0; counterEl.textContent='0'; });
 
-    // Increment logic with shrink, haptic, messages update
+    // Increment logic: session + global
     function incrementCounter() {
-      if (currentCount === null) return;
+      if (globalCount===null) return;
+      // Visual haptic
       img.classList.add('shrink');
-      setTimeout(() => img.classList.remove('shrink'), 100);
+      setTimeout(()=>img.classList.remove('shrink'),100);
       navigator.vibrate?.(50);
-      currentCount++;
-      counterEl.textContent = currentCount;
+      // Update session
+      sessionClicks++;
       updateMessages();
-      fetch(API, { method: 'POST' })
-        .then(r => r.json())
-        .then(data => {
-          if (data.count >= currentCount) {
-            currentCount = data.count;
-            counterEl.textContent = currentCount;
-            updateMessages();
-          }
+      // Update global
+      globalCount++;
+      counterEl.textContent = globalCount;
+      fetch(API,{method:'POST'})
+        .then(r=>r.json())
+        .then(data=>{
+          globalCount = data.count;
+          counterEl.textContent = globalCount;
         });
     }
 
-    img.addEventListener('click', incrementCounter);
-    document.addEventListener('keydown', e => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        incrementCounter();
-      }
+    img.addEventListener('click',incrementCounter);
+    document.addEventListener('keydown',e=>{
+      if(e.code==='Space'){e.preventDefault();incrementCounter();}
     });
 
-    // Poll every 5s and update messages
-    setInterval(() => {
-      if (currentCount === null) return;
-      fetch(API)
-        .then(r => r.json())
-        .then(data => {
-          if (data.count > currentCount) {
-            currentCount = data.count;
-            counterEl.textContent = currentCount;
-            updateMessages();
-          }
-        });
-    }, 5000);
+    // No initial messages
+    messagesContainer.innerHTML = '';
   </script>
 </body>
 </html>
