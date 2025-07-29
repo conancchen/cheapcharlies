@@ -1,7 +1,6 @@
-// js/script.js
 // Static destination: Cheap Charlie’s Bar (On Nut, Bangkok)
-const DEST_LAT = 13.70633;
-const DEST_LNG = 100.59894;
+const DEST_LAT = 13.7290;
+const DEST_LNG = 100.5780;
 
 // Elements
 const compassContainer = document.getElementById("compass-container");
@@ -18,66 +17,68 @@ let buzzed = false;
 const toRad = x => (x * Math.PI) / 180;
 const toDeg = x => (x * 180) / Math.PI;
 
-// Calculate distance in meters
+// Distance in meters
 function calcDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371000; // meters
+  const R = 6371000;
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
   const a =
-    Math.sin(dLat / 2) ** 2 +
+    Math.sin(dLat/2)**2 +
     Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLon/2)**2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c;
 }
 
-// Calculate bearing in degrees
+// Bearing in degrees
 function calcBearing(lat1, lon1, lat2, lon2) {
-  const φ1 = toRad(lat1);
-  const φ2 = toRad(lat2);
+  const φ1 = toRad(lat1), φ2 = toRad(lat2);
   const Δλ = toRad(lon2 - lon1);
-  const y = Math.sin(Δλ) * Math.cos(φ2);
-  const x =
-    Math.cos(φ1) * Math.sin(φ2) -
-    Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-  return (toDeg(Math.atan2(y, x)) + 360) % 360;
+  const y = Math.sin(Δλ)*Math.cos(φ2);
+  const x = Math.cos(φ1)*Math.sin(φ2) -
+            Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+  return (toDeg(Math.atan2(y,x)) + 360) % 360;
 }
 
-// GPS callback → update distance & bearing
+// GPS callback
 function onPosition(pos) {
   warningBox.classList.add("hidden");
   const { latitude: lat, longitude: lon } = pos.coords;
   targetBearing = calcBearing(lat, lon, DEST_LAT, DEST_LNG);
   const dist = calcDistance(lat, lon, DEST_LAT, DEST_LNG);
-  let distText;
+
+  let text;
   if (dist <= 200) {
-    distText = "Here";
+    text = "Here";
   } else if (dist > 2000) {
-    distText = `${(dist / 1000).toFixed(1)} km`;
+    text = `${(dist/1000).toFixed(1)} km`;
   } else {
-    distText = `${Math.round(dist)} m`;
+    text = `${Math.round(dist)} m`;
   }
-  centerBtn.innerText = distText;
+  centerBtn.innerText = text;
 }
 
-// Smooth animation loop
+// Smooth animation
 function animate() {
-  currentRot += (desiredRot - currentRot) * 0.1;
+  currentRot += (desiredRot - currentRot)*0.1;
   compassContainer.style.transform = `rotate(${currentRot}deg)`;
   requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
 
-// Update compass on device orientation
+// Device orientation callback
 function updateCompass(evt) {
   let heading = evt.webkitCompassHeading ?? evt.alpha;
   if (heading == null) return;
   const screenAngle = (screen.orientation?.angle) || 0;
   heading = (heading + screenAngle) % 360;
+
   let rot = targetBearing - heading;
   rot = ((rot + 540) % 360) - 180;
   desiredRot = rot;
+
+  // Haptic at ±5°
   if (Math.abs(rot) < 5 && !buzzed) {
     navigator.vibrate?.(100);
     buzzed = true;
@@ -89,6 +90,8 @@ function updateCompass(evt) {
 function enableSensors() {
   enableBtn.style.display = "none";
   warningBox.classList.add("hidden");
+
+  // iOS motion permission
   if (typeof DeviceOrientationEvent.requestPermission === "function") {
     DeviceOrientationEvent.requestPermission()
       .then(res => {
@@ -102,6 +105,7 @@ function enableSensors() {
     window.addEventListener("deviceorientation", updateCompass);
     window.addEventListener("deviceorientationabsolute", updateCompass);
   }
+
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       onPosition,
@@ -109,10 +113,11 @@ function enableSensors() {
         warningBox.classList.remove("hidden");
         centerBtn.innerText = "–––";
       },
-      { enableHighAccuracy: true, maximumAge: 10000 }
+      { enableHighAccuracy:true, maximumAge:10000 }
     );
   }
 }
+
 enableBtn.addEventListener("click", enableSensors);
 warningBox.addEventListener("click", enableSensors);
 
