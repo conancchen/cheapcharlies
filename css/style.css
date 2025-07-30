@@ -17,7 +17,7 @@ body {
   align-items: center;
   padding: 2rem 1rem;
 
-  /* 20% white overlay on top of the image = image at 80% opacity */
+  /* 30% white overlay on top of the image = image at 70% opacity */
   background:
     linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)),
     url("../images/cheapcharlies.jpg") no-repeat center center fixed;
@@ -87,7 +87,7 @@ header h1 {
   width: 70vw;
   max-width: 350px;
   aspect-ratio: 1 / 1;
-  border: 2px solid #fff;
+  border: 2px solid #FF13F0;
   border-radius: 50%;
   margin: 2rem 0;
   transform-origin: center center;
@@ -100,7 +100,7 @@ header h1 {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.5rem;
-  color: #fff;
+  color: #FF13F0;
 }
 
 /* Center distance display */
