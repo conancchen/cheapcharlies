@@ -68,24 +68,18 @@ body {
   background-color: #222;
 }
 
-/* Header text with black background */
+/* Header text */
 header h1 {
   font-size: 2rem;
   font-weight: bold;
-  background-color: var(--fg);
   color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: var(--btn-radius);
-  margin-bottom: 0.5rem;
 }
 
+/* Subtitle text */
 .subtitle {
   margin-top: 0.25rem;
   font-size: 1rem;
-  background-color: var(--fg);
   color: #fff;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--btn-radius);
 }
 
 /* Compass circle */
