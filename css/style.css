@@ -39,12 +39,12 @@ body {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  justify-content: center; /* center contents */
-  width: 100%; /* full width banner */
+  justify-content: center;
   gap: 0.5rem;
+  width: 100%;
 }
 
-/* Button-like links everywhere */
+/* Button-like links */
 a.button-link,
 a.button-link:visited {
   background-color: var(--fg);
@@ -60,24 +60,7 @@ a.button-link:hover {
   background-color: #222;
 }
 
-/* Site navigation */
-.site-nav {
-  margin-bottom: 1rem;
-}
-.site-nav a {
-  color: var(--fg);
-  text-decoration: none;
-  font-weight: bold;
-  margin: 0 0.5rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--btn-radius);
-  transition: background-color 0.2s ease-in-out;
-}
-.site-nav a:hover {
-  background-color: rgba(0,0,0,0.1);
-}
-
-/* Header text highlighted black, text transparent */
+/* Header text highlighted black with transparent fill */
 header h1 {
   font-size: 2rem;
   font-weight: bold;
@@ -88,13 +71,20 @@ header h1 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
+  margin-bottom: 0.25rem;
 }
 
-/* Subtitle text */
+/* Subtitle highlighted black with transparent fill */
 .subtitle {
-  margin-top: 0.25rem;
   font-size: 1rem;
-  color: #fff;
+  background-color: #000;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1rem;
 }
 
 /* Compass circle */
@@ -131,7 +121,7 @@ header h1 {
   color: var(--fg);
 }
 
-/* Warning box as button */
+/* Warning box (click to enable both sensors) */
 #warning-box {
   padding: 0.75rem 1.5rem;
   background: var(--bg);
@@ -142,22 +132,10 @@ header h1 {
   font-size: 0.95rem;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+  width: 70vw;
+  max-width: 300px;
+  text-align: center;
 }
 #warning-box:hover {
   background-color: #ffe24a;
-}
-
-/* Enable compass button */
-#enable-btn {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--fg);
-  color: var(--bg);
-  border: none;
-  border-radius: var(--btn-radius);
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease-in-out;
-}
-#enable-btn:hover {
-  background-color: #222;
 }
