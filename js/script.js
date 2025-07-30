@@ -130,5 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Ensure header h1 is white */
 header h1 {
-  color: #fff !important;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
 }
