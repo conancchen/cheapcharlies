@@ -87,7 +87,7 @@ header h1 {
   width: 70vw;
   max-width: 350px;
   aspect-ratio: 1 / 1;
-  border: 2px solid #FF13F0;
+  border: 2px solid #87efff;
   border-radius: 50%;
   margin: 2rem 0;
   transform-origin: center center;
@@ -100,7 +100,7 @@ header h1 {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.5rem;
-  color: #FF13F0;
+  color: #87efff;
 }
 
 /* Center distance display */
