@@ -19,7 +19,7 @@ body {
 
   /* 30% white overlay on top of the image = image at 70% opacity */
   background:
-    linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)),
+    linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
     url("../images/cheapcharlies.jpg") no-repeat center center fixed;
   background-size: cover;
 
