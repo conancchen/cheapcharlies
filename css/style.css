@@ -16,13 +16,13 @@ body {
   align-items: center;
   padding: 2rem 1rem;
 
-  /* 50% faded background image */
+  /* 20% white overlay on top of the image = image at 80% opacity */
   background:
-    /* top layer: 50% white overlay */
-    linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)),
-    /* bottom layer: your image */
+    linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)),
     url("../images/cheapcharlies.jpg") no-repeat center center fixed;
   background-size: cover;
+}
+
 
   font-family: "Helvetica Neue", Arial, sans-serif;
   color: #333;
@@ -74,7 +74,7 @@ header h1 {
   width: 70vw;
   max-width: 350px;
   aspect-ratio: 1/1;
-  border: 2px solid var(--fg);
+  border: 2px solid #fff;    /* was #333 or var(--fg) */
   border-radius: 50%;
   margin: 2rem 0;
   transform-origin: center center;
@@ -87,7 +87,7 @@ header h1 {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.5rem;
-  color: var(--fg);
+  color: #fff;               /* was #333 or var(--fg) */
 }
 
 /* Center distance display */
