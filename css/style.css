@@ -37,6 +37,25 @@ body {
   font-size: 0.9rem;
   font-weight: bold;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Button-like links everywhere */
+a.button-link,
+a.button-link:visited {
+  background-color: var(--fg);
+  color: var(--bg);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--btn-radius);
+  border: 2px solid var(--fg);
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+a.button-link:hover {
+  background-color: #222;
 }
 
 /* Site navigation */
@@ -54,18 +73,6 @@ body {
 }
 .site-nav a:hover {
   background-color: rgba(0,0,0,0.1);
-}
-
-/* Button-like nav item */
-.site-nav a.button-link {
-  background-color: var(--fg);
-  color: var(--bg);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--btn-radius);
-  border: 2px solid var(--fg);
-}
-.site-nav a.button-link:hover {
-  background-color: #222;
 }
 
 /* Header text */
