@@ -39,6 +39,8 @@ body {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  justify-content: center; /* center contents */
+  width: 100%; /* full width banner */
   gap: 0.5rem;
 }
 
@@ -75,11 +77,17 @@ a.button-link:hover {
   background-color: rgba(0,0,0,0.1);
 }
 
-/* Header text */
+/* Header text highlighted black, text transparent */
 header h1 {
   font-size: 2rem;
   font-weight: bold;
-  color: #fff;
+  background-color: #000;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Subtitle text */
