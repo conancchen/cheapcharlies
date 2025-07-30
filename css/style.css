@@ -60,12 +60,13 @@ body {
 header h1 {
   font-size: 2rem;
   font-weight: bold;
+  color: #fff;
 }
 
 .subtitle {
   margin-top: 0.25rem;
   font-size: 1rem;
-  color: #333333;
+  color: #fff;
 }
 
 /* Compass circle */
