@@ -15,9 +15,17 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
-  background: var(--bg);
+
+  /* 50% faded background image */
+  background:
+    /* top layer: 50% white overlay */
+    linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)),
+    /* bottom layer: your image */
+    url("../images/cheapcharlies.jpg") no-repeat center center fixed;
+  background-size: cover;
+
   font-family: "Helvetica Neue", Arial, sans-serif;
-  color: var(--fg);
+  color: #333;
   text-align: center;
 }
 
