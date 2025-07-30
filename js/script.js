@@ -127,3 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
   centerBtn.innerText = 'Ready';
   warningBox.style.display = 'block';
 });
+
+/* Ensure header h1 is white */
+header h1 {
+  color: #fff !important;
+}
