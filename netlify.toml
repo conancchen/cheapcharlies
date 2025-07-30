@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/secret.html"
+  to   = "/secret.html"
+  status = 200
+  conditions = { Role = ["beta-tester"] }
