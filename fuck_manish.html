@@ -8,6 +8,48 @@
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
+    /* Overlay styles for password protection */
+    #password-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #password-prompt {
+      background: #fff;
+      padding: 2rem;
+      border: 2px solid #000;
+      border-radius: 8px;
+      text-align: center;
+    }
+    #password-prompt input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #password-prompt button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #000;
+      background: #000;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #password-error {
+      color: red;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    /* Existing styles... */
     body {
       display: flex;
       flex-direction: column;
@@ -82,6 +124,16 @@
   </style>
 </head>
 <body>
+  <!-- Password Overlay -->
+  <div id="password-overlay">
+    <div id="password-prompt">
+      <h2>Enter Password</h2>
+      <input type="password" id="password-input" placeholder="Password" />
+      <button id="password-submit">Enter</button>
+      <p id="password-error">Incorrect password</p>
+    </div>
+  </div>
+
   <nav class="site-nav">
     <a href="index.html">Cheap Charlies Compass</a>
   </nav>
@@ -91,22 +143,35 @@
 
   <div id="counter"></div>
   <img id="manish-img" src="images/manish.jpg" alt="Manish">
-
-  <!-- Messages: appear only after session clicks reach thresholds -->
   <div id="messages"></div>
 
   <script>
+    const PASSWORD = 'YOUR_PASSWORD'; // Replace with your chosen password
+    const overlay = document.getElementById('password-overlay');
+    const inputEl = document.getElementById('password-input');
+    const submitBtn = document.getElementById('password-submit');
+    const errorEl = document.getElementById('password-error');
+
+    function checkPassword() {
+      if (inputEl.value === PASSWORD) {
+        overlay.style.display = 'none';
+      } else {
+        errorEl.style.display = 'block';
+      }
+    }
+    submitBtn.addEventListener('click', checkPassword);
+    inputEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkPassword();
+    });
+
+    // Main counter logic
     const API = 'https://script.google.com/macros/s/AKfycbwqF0QBTXnAmZMh43jmxxKp9emTYJw8iQPGctAbvedN7mzy2_qvK0S4TyCw73Y11r8tsw/exec';
     const counterEl = document.getElementById('counter');
     const img = document.getElementById('manish-img');
     const messagesContainer = document.getElementById('messages');
-
-    // Session click count
     let sessionClicks = 0;
-    // Persistent global count
     let globalCount = null;
 
-    // Define thresholds and messages
     const thresholds = [25,50,75,100,125,150,175,200,225,250];
     const messageList = [
       'Goodmorning',
@@ -121,7 +186,6 @@
       '250 clicks! If you made it here you must really wanna F manish.'
     ];
 
-    // Render messages based on sessionClicks
     function updateMessages() {
       messagesContainer.innerHTML = '';
       thresholds.forEach((t,i) => {
@@ -133,29 +197,22 @@
       });
     }
 
-    // Show loading initial
     counterEl.textContent = 'Loading…';
-
-    // Fetch global count only for display
     fetch(API)
       .then(r=>r.json())
       .then(data=>{
         globalCount = data.count || 0;
         counterEl.textContent = globalCount;
       })
-      .catch(()=> { globalCount=0; counterEl.textContent='0'; });
+      .catch(()=>{ globalCount=0; counterEl.textContent='0'; });
 
-    // Increment logic: session + global
     function incrementCounter() {
       if (globalCount===null) return;
-      // Visual haptic
       img.classList.add('shrink');
       setTimeout(()=>img.classList.remove('shrink'),100);
       navigator.vibrate?.(50);
-      // Update session
       sessionClicks++;
       updateMessages();
-      // Update global
       globalCount++;
       counterEl.textContent = globalCount;
       fetch(API,{method:'POST'})
@@ -165,13 +222,10 @@
           counterEl.textContent = globalCount;
         });
     }
-
     img.addEventListener('click',incrementCounter);
-    document.addEventListener('keydown',e=>{
-      if(e.code==='Space'){e.preventDefault();incrementCounter();}
-    });
+    document.addEventListener('keydown',e=>{ if(e.code==='Space'){e.preventDefault();incrementCounter();}});
 
-    // No initial messages
+    // Initialize no messages
     messagesContainer.innerHTML = '';
   </script>
 </body>
