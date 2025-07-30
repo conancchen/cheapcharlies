@@ -5,25 +5,27 @@ const DEST_LNG = 100.59896;
 
 document.addEventListener('DOMContentLoaded', () => {
   const compassContainer = document.getElementById('compass-container');
-  const centerBtn = document.getElementById('center-btn');
-  const warningBox = document.getElementById('warning-box');
-  const enableBtn = document.getElementById('enable-btn');
+  const centerBtn        = document.getElementById('center-btn');
+  const warningBox       = document.getElementById('warning-box');
+  const enableBtn        = document.getElementById('enable-btn');
 
   let targetBearing = 0;
-  let currentRot = 0;
-  let desiredRot = 0;
-  let buzzed = false;
+  let currentRot    = 0;
+  let desiredRot    = 0;
+  let buzzed        = false;
 
+  // Helpers
   const toRad = x => x * Math.PI / 180;
   const toDeg = x => x * 180 / Math.PI;
 
-  // Haversine distance (m)
+  // Haversine distance (meters)
   function calcDistance(lat1, lon1, lat2, lon2) {
     const R = 6371000;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
     const a = Math.sin(dLat/2)**2 +
-              Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon/2)**2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -38,8 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return (toDeg(Math.atan2(y, x)) + 360) % 360;
   }
 
-  // Called on GPS update
+  // Called on each GPS update
   function onPosition(pos) {
+    // Hide the UI now that we have location
     warningBox.style.display = 'none';
     enableBtn.style.display = 'none';
 
@@ -56,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Smooth animation
+  // Smooth rotation animation
   function animate() {
     currentRot += (desiredRot - currentRot) * 0.1;
     compassContainer.style.transform = `rotate(${currentRot}deg)`;
@@ -64,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   requestAnimationFrame(animate);
 
-  // Device orientation handler
+  // Handle device orientation
   function updateCompass(evt) {
     let heading = evt.webkitCompassHeading ?? evt.alpha;
     if (heading == null) return;
@@ -76,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rot = ((rot + 540) % 360) - 180;
     desiredRot = rot;
 
+    // Haptic when within 5°
     if (Math.abs(rot) < 5 && !buzzed) {
       navigator.vibrate?.(100);
       buzzed = true;
@@ -83,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (Math.abs(rot) >= 5) buzzed = false;
   }
 
-  // Request both motion and location
+  // Request both motion & geolocation
   function enableSensors() {
     // Motion permission (iOS 13+)
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -98,22 +102,32 @@ document.addEventListener('DOMContentLoaded', () => {
       window.addEventListener('deviceorientation', updateCompass);
     }
 
-    // Start GPS watch
+    // Start watching location
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
         onPosition,
-        err => {},
+        err => { /* ignore */ },
         { enableHighAccuracy: true, maximumAge: 10000 }
       );
     }
   }
 
-  // Hook up both enable button and warning box
+  // Also auto‑start if geolocation already granted
+  if (navigator.permissions) {
+    navigator.permissions.query({ name: 'geolocation' }).then(status => {
+      if (status.state === 'granted') enableSensors();
+      status.onchange = () => {
+        if (status.state === 'granted') enableSensors();
+      };
+    });
+  }
+
+  // Hook up the UI triggers
   enableBtn.addEventListener('click', enableSensors);
   warningBox.addEventListener('click', enableSensors);
 
-  // Initialize UI
-  centerBtn.innerText = 'Ready';
-  warningBox.style.display = 'block';
-  enableBtn.style.display = 'block';
+  // Initial UI state
+  centerBtn.innerText        = 'Ready';
+  warningBox.style.display   = 'block';
+  enableBtn.style.display    = 'block';
 });
