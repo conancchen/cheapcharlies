@@ -1,3 +1,4 @@
+/* css/style.css */
 :root {
   --bg: #87efff;
   --fg: #000000;
@@ -21,11 +22,9 @@ body {
     linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)),
     url("../images/cheapcharlies.jpg") no-repeat center center fixed;
   background-size: cover;
-}
-
 
   font-family: "Helvetica Neue", Arial, sans-serif;
-  color: #333;
+  color: #fff;
   text-align: center;
 }
 
@@ -57,6 +56,19 @@ body {
   background-color: rgba(0,0,0,0.1);
 }
 
+/* Button-like nav item */
+.site-nav a.button-link {
+  background-color: var(--fg);
+  color: var(--bg);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--btn-radius);
+  border: 2px solid var(--fg);
+}
+.site-nav a.button-link:hover {
+  background-color: #222;
+}
+
+/* Header text */
 header h1 {
   font-size: 2rem;
   font-weight: bold;
@@ -74,8 +86,8 @@ header h1 {
   position: relative;
   width: 70vw;
   max-width: 350px;
-  aspect-ratio: 1/1;
-  border: 2px solid #fff;    /* was #333 or var(--fg) */
+  aspect-ratio: 1 / 1;
+  border: 2px solid #fff;
   border-radius: 50%;
   margin: 2rem 0;
   transform-origin: center center;
@@ -88,7 +100,7 @@ header h1 {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.5rem;
-  color: #fff;               /* was #333 or var(--fg) */
+  color: #fff;
 }
 
 /* Center distance display */
@@ -100,6 +112,7 @@ header h1 {
   font-weight: bold;
   margin-bottom: 1rem;
   min-width: 100px;
+  color: var(--fg);
 }
 
 /* Warning box as button */
@@ -115,10 +128,10 @@ header h1 {
   transition: background-color 0.2s ease-in-out;
 }
 #warning-box:hover {
-  background-color: #FFE24A;
+  background-color: #ffe24a;
 }
 
-/* Enable-compass button */
+/* Enable compass button */
 #enable-btn {
   padding: 0.75rem 1.5rem;
   background-color: var(--fg);
@@ -130,19 +143,5 @@ header h1 {
   transition: background-color 0.2s ease-in-out;
 }
 #enable-btn:hover {
-  background-color: #222222;
+  background-color: #222;
 }
-
-/* Make that nav item look like a button */
-.site-nav a.button-link {
-  background-color: #000;        /* black fill */
-  color: #87efff;                /* yellow text */
-  padding: 0.25rem 0.75rem;
-  border-radius: 8px;
-  border: 2px solid #000;
-  transition: background-color 0.2s ease;
-}
-.site-nav a.button-link:hover {
-  background-color: #222;        /* slightly lighter black on hover */
-}
-
