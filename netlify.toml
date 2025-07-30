@@ -1,5 +1,6 @@
 [[redirects]]
-  from = "/secret.html"
-  to   = "/secret.html"
+  from   = "/secret.html"
+  to     = "/secret.html"
   status = 200
+  force  = true
   conditions = { Role = ["beta-tester"] }
