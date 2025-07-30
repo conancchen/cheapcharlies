@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const compassContainer = document.getElementById('compass-container');
   const centerBtn = document.getElementById('center-btn');
   const warningBox = document.getElementById('warning-box');
+  const enableBtn = document.getElementById('enable-btn');
 
   let targetBearing = 0;
   let currentRot = 0;
   let desiredRot = 0;
   let buzzed = false;
-  let hasLocation = false;
 
   const toRad = x => x * Math.PI / 180;
   const toDeg = x => x * 180 / Math.PI;
@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Called on GPS update
   function onPosition(pos) {
-    hasLocation = true;
     warningBox.style.display = 'none';
+    enableBtn.style.display = 'none';
 
     const { latitude: lat, longitude: lon } = pos.coords;
     targetBearing = calcBearing(lat, lon, DEST_LAT, DEST_LNG);
@@ -102,35 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
         onPosition,
-        err => {
-          if (!hasLocation) warningBox.style.display = 'block';
-        },
+        err => {},
         { enableHighAccuracy: true, maximumAge: 10000 }
       );
     }
   }
 
-  // If permission already granted, start immediately
-  if (navigator.permissions) {
-    navigator.permissions.query({ name: 'geolocation' }).then(status => {
-      if (status.state === 'granted') enableSensors();
-      status.onchange = () => {
-        if (status.state === 'granted') enableSensors();
-      };
-    });
-  }
-
-  // Use warningBox to trigger both
+  // Hook up both enable button and warning box
+  enableBtn.addEventListener('click', enableSensors);
   warningBox.addEventListener('click', enableSensors);
 
   // Initialize UI
   centerBtn.innerText = 'Ready';
   warningBox.style.display = 'block';
+  enableBtn.style.display = 'block';
 });
-
-/* Ensure header h1 is white */
-header h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #fff;
-}
